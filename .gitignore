@@ -1,6 +1,10 @@
 # LaTex
 *.aux
+*.bbl
+*.bcf
+*.blg
 *.fdb_latexmk
 *.fls
 *.log
 *.synctex.gz
+*.run.xml
