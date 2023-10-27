@@ -26,8 +26,9 @@ csnyder1@mines.edu}
 \maketitle
 
 \begin{abstract}
-IoT devices have exploded in use over the past few years.
-This has caused concerns over data privacy and security.
+The wide spread proliferation of Internet of Things (IoT) devices
+have brought up many questions and concerns about their security
+and how much data they truly collect.
 Many papers have been writen to detect IoT devices and catalog them,
 however none use a graphical database in order to do so.
 Using a graphical database provides many benefits over current systems
@@ -39,7 +40,39 @@ IoT, graphical databases, databases, systems
 \end{IEEEkeywords}
 
 \section{Introduction}
+Smart homes are all the rage now adays. There are smart devices everywhere, from lights to door locks.
+It seems that these devices, which are refered to by their collective as Internet of Things or IoT devices, are everywhere.
+With all these new devices come a whole slew of concerns about privacy and security \cite{IoTInspector}.
+There are many papers that explore these concerns, what this paper seeks to explore is how those findings are
+aggregated and stored. There has been a lot of success at using graphical databases due to their speed for querying
+on certain questions regarding big data.
 
+\section{Related Works}
+There are many current systems that implement different components of the general idea of graphical databases for
+IoT device management andanomoly detection, but none put these components together. \textit{IoT Inspector} is a great
+tool that performs the task of monitoring using a form of a relational database, but not a graphical one \cite{IoTInspector}.
+The authors of \textit{The Graph of Things} created such a system for aggregating IoT devices worldwide \cite{GraphofThings}; 
+However, these systems are not built for small networks or home users.
+
+\section{Methodology}
+The first step of the methodology was to determine the technology stack. It was determined that NMap would be used
+to scan for devices, TCPDump would be used for packet capture, Python for programming, and Neo4J for the database
+technology. The database technology was the most difficult to determine due to the unique challenges faced 
+when using a graphical database. The first idea was to use the Resource Description Framework (RDF) as the base.
+There currently does exist an ontology using RDF for IoT devices \cite{RDFIoT}. Indeed, using an ontology for IoT devices
+is very useful for cataloging at scale \cite{IoTSmartOntology}. However, this project is not designed for scale, but for
+the userspace. For this RDF has some drawbacks such as needing a separate node and edge for details about a parent node.
+This is not optimal for both performance and size. It was determined, then, to go with a graphical model that allows
+for information to be included with each node. This is where Neo4J comes in. With attributes being stored in JSON files
+connected to the nodes makes it optimal for this use.
+
+\section{Results}
+
+\section{Analysis}
+
+\section{Future Work}
+
+\section{Conclusion}
 
 \printbibliography
 
