@@ -8,3 +8,6 @@
 *.log
 *.synctex.gz
 *.run.xml
+
+# JetBrains
+.idea/*
