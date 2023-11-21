@@ -11,3 +11,7 @@
 
 # JetBrains
 .idea/*
+
+# General
+*.csv
+.DS_Store

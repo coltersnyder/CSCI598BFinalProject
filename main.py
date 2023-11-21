@@ -1,3 +1,5 @@
+import csv
+
 import nmap
 from neo4j import GraphDatabase
 
@@ -6,6 +8,29 @@ from neo4j import GraphDatabase
 import socket
 import struct
 import binascii
+
+class PaperScanner:
+    def __init__(self, uri, user, password, eth: str = 'eth0', subnet: str = '10.0.0.0'):
+        self.driver = GraphDatabase.driver(uri, auth=(user, password))
+
+        self.data = []
+
+        with open("data/UNSW_2018_IoT_Botnet_Full5pc_1.csv") as csvfile:
+            csvreader = csv.DictReader(csvfile)
+            for row in csvreader:
+                self.data.append(row)
+                self.driver.execute_query(
+                    "MERGE (:Device {addr: $addr})",
+                    addr=row['saddr'],
+                    database_='neo4j')
+                self.driver.execute_query(
+                    "MERGE (:Device {addr: $addr})",
+                    addr=row['daddr'],
+                    database_='neo4j')
+            print(self.data[0].keys())
+            print(f"{self.data[0]['saddr']} -> {self.data[0]['daddr']}")
+            print((self.data[0]['sport'],self.data[0]['dport'],self.data[0]['proto']))
+
 
 class IoTScanner:
     def __init__(self, uri, user, password, eth: str = 'eth0', subnet: str = '10.0.0.0'):
@@ -36,6 +61,9 @@ class IoTScanner:
 
 
 if __name__ == '__main__':
-    iots = IoTScanner("bold://localhost:7687", "neo4j", "password")
+    '''
+    iots = IoTScanner("bolt://localhost:7687", "neo4j", "password")
     iots.init_graph()
     iots.close()
+    '''
+    ps = PaperScanner("bolt://localhost:7687", "neo4j", "test1234")
