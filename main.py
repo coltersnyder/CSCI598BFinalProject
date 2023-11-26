@@ -1,7 +1,7 @@
 import csv
 
 import nmap
-from neo4j import GraphDatabase
+from neo4j import GraphDatabase, RoutingControl
 
 # For ARP Spoofing
 # https://www.tutorialspoint.com/python_penetration_testing/python_penetration_testing_arp_spoofing.htm
@@ -15,6 +15,7 @@ class PaperScanner:
 
         self.data = []
 
+        '''
         with open("data/UNSW_2018_IoT_Botnet_Full5pc_1.csv") as csvfile:
             csvreader = csv.DictReader(csvfile)
             for row in csvreader:
@@ -27,9 +28,92 @@ class PaperScanner:
                     "MERGE (:Device {addr: $addr})",
                     addr=row['daddr'],
                     database_='neo4j')
-            print(self.data[0].keys())
-            print(f"{self.data[0]['saddr']} -> {self.data[0]['daddr']}")
-            print((self.data[0]['sport'],self.data[0]['dport'],self.data[0]['proto']))
+
+                self.driver.execute_query(
+                    "MATCH (saddr:Device {addr: $saddr}), (daddr:Device {addr: $daddr}) MERGE (saddr)-[:HasDetails {sport: $sport, dport: $dport, proto: $proto, stime: $stime}]->(daddr)",
+                    saddr=row['saddr'],
+                    daddr=row['daddr'],
+                    sport=row['sport'],
+                    dport=row['dport'],
+                    proto=row['proto'],
+                    stime=row['stime'],
+                    database_='neo4j'
+                )
+        '''
+
+        print()
+        print("===============")
+        print("= Data Parsed =")
+        print("===============")
+        print()
+
+        print("=========================")
+        print("= Executing Query Tests =")
+        print("=========================")
+        print()
+
+        print("===================")
+        print("= Number of Nodes =")
+        print("===================")
+        print()
+
+        node_count, _, _ = self.driver.execute_query(
+                    "MATCH (a:Device) RETURN count(a) AS count",
+                    database_='neo4j', routing_=RoutingControl.READ)
+        
+        print(node_count[0])
+
+        print()
+        print("===========================")
+        print("= Number of Relationships =")
+        print("===========================")
+        print()
+
+        rel_count, _, _ = self.driver.execute_query(
+                    "MATCH (:Device)-[a]->(:Device) RETURN count(a) AS count",
+                    database_='neo4j', routing_=RoutingControl.READ)
+        
+        print(rel_count[0])
+
+        print()
+        print("==========================================")
+        print("= 1.) How Many Packets Each Device Sends =")
+        print("==========================================")
+        print()
+
+        nodes, _, _ = self.driver.execute_query(
+                    "MATCH (a:Device) RETURN a.addr",
+                    database_='neo4j', routing_=RoutingControl.READ)
+        
+        for node in nodes:
+            to_rels, _, _ = self.driver.execute_query(
+                    "Match (:Device {addr: $addr})-[b]->() RETURN count(b) AS count",
+                    addr=node["a.addr"],
+                    database_='neo4j')
+            print(f'{node["a.addr"]} has {to_rels[0]["count"]} outgoing relationships')
+
+        print()
+        print("=============================================")
+        print("= 2.) How Many Packets Each Device Receives =")
+        print("=============================================")
+        print()
+
+        nodes, _, _ = self.driver.execute_query(
+                    "MATCH (a:Device) RETURN a.addr",
+                    database_='neo4j', routing_=RoutingControl.READ)
+        
+        for node in nodes:
+            to_rels, _, _ = self.driver.execute_query(
+                    "Match ()-[b]->(:Device {addr: $addr}) RETURN count(b) AS count",
+                    addr=node["a.addr"],
+                    database_='neo4j')
+            print(f'{node["a.addr"]} has {to_rels[0]["count"]} incoming relationships')
+
+        print()
+        print("=============================================")
+        print("= 3.) How Much Time Passed Between Sessions =")
+        print("=============================================")
+        print()
 
 
 class IoTScanner:
