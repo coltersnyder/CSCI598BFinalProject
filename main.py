@@ -1,4 +1,6 @@
 import csv
+import datetime
+import math
 
 import nmap
 from neo4j import GraphDatabase, RoutingControl
@@ -110,10 +112,104 @@ class PaperScanner:
             print(f'{node["a.addr"]} has {to_rels[0]["count"]} incoming relationships')
 
         print()
-        print("=============================================")
-        print("= 3.) How Much Time Passed Between Sessions =")
-        print("=============================================")
+        print("=======================================================")
+        print("= 3.) How many packets are sent per second on average =")
+        print("=======================================================")
         print()
+
+        nodes, _, _ = self.driver.execute_query(
+                    "MATCH (a:Device) RETURN a.addr",
+                    database_='neo4j', routing_=RoutingControl.READ)
+        
+        for node in nodes:
+            to_rels, _, _ = self.driver.execute_query(
+                    "Match (:Device {addr: $addr})-[b]->() RETURN b.stime",
+                    addr=node["a.addr"],
+                    database_='neo4j')
+            
+            packs_per_sec = []
+            curPacks = 0
+            curTime = -1
+            for rel in to_rels:
+                if curTime == -1:
+                    curTime = math.floor(float(rel["b.stime"]))
+
+                if float(rel["b.stime"]) - curTime < 1:
+                    curPacks = curPacks + 1
+                else:
+                    curTime = math.floor(float(rel["b.stime"]))
+                    packs_per_sec.append(curPacks)
+                    curPacks = 0
+
+            if len(packs_per_sec) != 0:
+                avg_packs_per_sec = sum(packs_per_sec) / len(packs_per_sec)
+            else:
+                avg_packs_per_sec = 0.0
+
+
+            print(f'{node["a.addr"]} sends {avg_packs_per_sec} packets per second on average')
+
+        print()
+        print("===========================================================")
+        print("= 4.) How many packets are received per second on average =")
+        print("===========================================================")
+        print()
+
+        nodes, _, _ = self.driver.execute_query(
+                    "MATCH (a:Device) RETURN a.addr",
+                    database_='neo4j', routing_=RoutingControl.READ)
+        
+        for node in nodes:
+            to_rels, _, _ = self.driver.execute_query(
+                    "Match ()-[b]->(:Device {addr: $addr}) RETURN b.stime",
+                    addr=node["a.addr"],
+                    database_='neo4j')
+            
+            packs_per_sec = []
+            curPacks = 0
+            curTime = -1
+            for rel in to_rels:
+                if curTime == -1:
+                    curTime = math.floor(float(rel["b.stime"]))
+
+                if float(rel["b.stime"]) - curTime < 1:
+                    curPacks = curPacks + 1
+                else:
+                    curTime = math.floor(float(rel["b.stime"]))
+                    packs_per_sec.append(curPacks)
+                    curPacks = 0
+
+            if len(packs_per_sec) != 0:
+                avg_packs_per_sec = sum(packs_per_sec) / len(packs_per_sec)
+            else:
+                avg_packs_per_sec = 0.0
+
+
+            print(f'{node["a.addr"]} receives {avg_packs_per_sec} packets per second on average')
+
+        print()
+        print("=========================================================")
+        print("= 5.) Which ports are being used when receiving packets =")
+        print("=========================================================")
+        print()
+
+        nodes, _, _ = self.driver.execute_query(
+                    "MATCH (a:Device) RETURN a.addr",
+                    database_='neo4j', routing_=RoutingControl.READ)
+        
+        for node in nodes:
+            to_rels, _, _ = self.driver.execute_query(
+                    "Match ()-[b]->(:Device {addr: $addr}) RETURN b.dport",
+                    addr=node["a.addr"],
+                    database_='neo4j')
+            
+            ports_count = {}
+            for rel in to_rels:
+                port = rel["b.dport"]
+                ports_count[port] = ports_count.get(port, 0) + 1
+
+            for port in ports_count.keys():
+                print(f'{node["a.addr"]} receives packets through port {port} {ports_count[port]} times')
 
 
 class IoTScanner:
