@@ -208,8 +208,29 @@ class PaperScanner:
                 port = rel["b.dport"]
                 ports_count[port] = ports_count.get(port, 0) + 1
 
-            for port in ports_count.keys():
-                print(f'{node["a.addr"]} receives packets through port {port} {ports_count[port]} times')
+            # for port in ports_count.keys():
+            #     print(f'{node["a.addr"]} receives packets through port {port} {ports_count[port]} times')
+
+            print(f'{node["a.addr"]} contacted {len(ports_count)} ports')
+
+        print()
+        print("================================================")
+        print("= 6.) How many incoming flows does a node have =")
+        print("================================================")
+        print()
+
+        nodes, _, _ = self.driver.execute_query(
+                    "MATCH (a:Device) RETURN a.addr",
+                    database_='neo4j', routing_=RoutingControl.READ)
+        
+        for node in nodes:
+            to_rels, _, _ = self.driver.execute_query(
+                    "Match (b:Device)-[]->(:Device {addr: $addr}) RETURN COUNT(DISTINCT b) AS count",
+                    addr=node["a.addr"],
+                    database_='neo4j')
+            
+            for rel in to_rels:
+                print(f'{node["a.addr"]} had {rel["count"]} attempts to connect')
 
 
 class IoTScanner:

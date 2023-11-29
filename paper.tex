@@ -14,7 +14,7 @@
 
 \begin{document}
 
-\title{Graphical Databases for IoT Device Management and Anomoly Detection}
+\title{Graph Databases for Use with Timeseries IoT Datasets}
 
 \author{\IEEEauthorblockN{Colter Snyder}
 \IEEEauthorblockA{\textit{Department of Computer Science} \\
@@ -28,11 +28,12 @@ csnyder1@mines.edu}
 \begin{abstract}
 The wide spread proliferation of Internet of Things (IoT) devices
 have brought up many questions and concerns about their security
-and how much data they truly collect.
-Many papers have been writen to detect IoT devices and catalog them,
-however none use a graphical database in order to do so.
-Using a graphical database provides many benefits over current systems
-and allows for new questions to be answered.
+and what they do with data. Many solutions have appeared using 
+various solutions such as IoT Inspector \cite{IoTInspector}. 
+However, these solutions don't make use of the unique capabilities
+and efficiencies that graph databases provide. This paper seeks
+to use a graph database in order to answer challenging questions 
+about IoT devices particularly within the realm of timeseries datasets.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -40,12 +41,20 @@ IoT, graphical databases, databases, systems
 \end{IEEEkeywords}
 
 \section{Introduction}
-Smart homes are all the rage now adays. There are smart devices everywhere, from lights to door locks.
-It seems that these devices, which are refered to by their collective as Internet of Things or IoT devices, are everywhere.
+Smart homes are everywhere now adays, from lights to door locks, TVs to speakers.
+It seems that these devices, which are refered to by their collective as Internet of Things or IoT devices, are in every home.
 With all these new devices come a whole slew of concerns about privacy and security \cite{IoTInspector}.
-There are many papers that explore these concerns, what this paper seeks to explore is how those findings are
-aggregated and stored. There has been a lot of success at using graphical databases due to their speed for querying
-on certain questions regarding big data.
+There are many papers that explore these concerns, what this paper seeks to persue is how to efficiently analyze
+data collected from these devices such that people may infer various aspects about their devices. In particular,
+this paper seeks to see what what info can be garnered from timeseries datasets. Such aspects could include
+anything from what the device is doing to answering if a device is attacking the network and how.
+
+It was decided that using a graph database could provide answers to these questions
+more efficiently and easily than a relational database. The primary advantage for use in this paper
+is the fact that graph databases are great for use with densely connected data \cite{GraphSurvey}.
+On top of this, they are very quick to query and will give a result relatively quickly compared to
+other solutions \cite{GraphSurvey}.
+
 
 \section{Related Works}
 There are many current systems that implement different components of the general idea of graphical databases for
@@ -55,18 +64,52 @@ The authors of \textit{The Graph of Things} created such a system for aggregatin
 However, these systems are not built for small networks or home users.
 
 \section{Methodology}
-The first step of the methodology was to determine the technology stack. It was determined that NMap would be used
-to scan for devices, TCPDump would be used for packet capture, Python for programming, and Neo4J for the database
-technology. The database technology was the most difficult to determine due to the unique challenges faced 
-when using a graphical database. The first idea was to use the Resource Description Framework (RDF) as the base.
-There currently does exist an ontology using RDF for IoT devices \cite{RDFIoT}. Indeed, using an ontology for IoT devices
-is very useful for cataloging at scale \cite{IoTSmartOntology}. However, this project is not designed for scale, but for
-the userspace. For this RDF has some drawbacks such as needing a separate node and edge for details about a parent node.
-This is not optimal for both performance and size. It was determined, then, to go with a graphical model that allows
-for information to be included with each node. This is where Neo4J comes in. With attributes being stored in JSON files
-connected to the nodes makes it optimal for this use.
+The first step in this project was choosing the technology that was to be used. It was decided to use Neo4J
+and Python for the tech stack. 
 
 \section{Results}
+
+\begin{figure}[h]
+    \includegraphics[width=8cm]{Figure1.png}
+    \centering
+    \caption{The number of flows that were sent from particular IP addresses}
+    \label{fig:flowfrom}
+\end{figure}
+
+\begin{figure}[h]
+    \includegraphics[width=8cm]{Figure2.png}
+    \centering
+    \caption{The number of flows that were sent to particular IP addresses}
+    \label{fig:flowto}
+\end{figure}
+
+\begin{figure}[h]
+    \includegraphics[width=8cm]{Figure3.png}
+    \centering
+    \caption{The number of flows that were sent from particular IP addresses per second}
+    \label{fig:sentfrompersec}
+\end{figure}
+
+\begin{figure}[h]
+    \includegraphics[width=8cm]{Figure4.png}
+    \centering
+    \caption{The number of flows that were sent to particular IP addresses per second}
+    \label{fig:senttopersec}
+\end{figure}
+
+\begin{figure}[h]
+    \includegraphics[width=8cm]{Figure5.png}
+    \centering
+    \caption{The number of ports contacted per IP address}
+    \label{fig:portscontacted}
+\end{figure}
+
+\begin{figure}[h]
+    \includegraphics[width=8cm]{Figure6.png}
+    \centering
+    \caption{The number of flows from unique IP addresses coming into a particular IP address}
+    \label{fig:incomingflows}
+\end{figure}
 
 \section{Analysis}
 
