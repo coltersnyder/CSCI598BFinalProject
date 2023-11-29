@@ -53,7 +53,9 @@ It was decided that using a graph database could provide answers to these questi
 more efficiently and easily than a relational database. The primary advantage for use in this paper
 is the fact that graph databases are great for use with densely connected data \cite{GraphSurvey}.
 On top of this, they are very quick to query and will give a result relatively quickly compared to
-other solutions \cite{GraphSurvey}.
+other solutions \cite{GraphSurvey}. In particular, the use for home users and smaller networks was 
+examined by asking what queries could be run on a smaller dataset as well as what would be reasonable
+for a home user as far as time and efficiency.
 
 
 \section{Related Works}
@@ -61,13 +63,49 @@ There are many current systems that implement different components of the genera
 IoT device management andanomoly detection, but none put these components together. \textit{IoT Inspector} is a great
 tool that performs the task of monitoring using a form of a relational database, but not a graphical one \cite{IoTInspector}.
 The authors of \textit{The Graph of Things} created such a system for aggregating IoT devices worldwide \cite{GraphofThings}; 
-However, these systems are not built for small networks or home users.
-
+However, these systems are not built for small networks or home users. What this paper seeks to explore is what questions
+can a graph database answer for these smaller networks, home users, and generally users with smaller amounts of
+IP addresses being used. The queries and dataset going forward were chosen with these thoughts in mind.
+ 
 \section{Methodology}
-The first step in this project was choosing the technology that was to be used. It was decided to use Neo4J
-and Python for the tech stack. 
+This projects main goal was to see the about the ease of use for a graph database for answering certain questions.
+It was hypothesied that fairly simple queries to the database would allow the author to gain large amounts of
+information to be analyzed and from which many conclusions could be drawn.
+
+The first towards determining this hypothesis was choosing the technology that was to be used. It was decided 
+to use Neo4J and Python for the tech stack. Neo4J was chosen due to its unique feature of having practically 
+unlimited properties attached to both the nodes and the edges. This was particularly useful when working with 
+5-tuples where the nodes could hold the addresses and the edged could hold the ports, protocals, and a timestamp.
+Python was chosen due to its ease of use, quick prototyping, and library support for Neo4J. 
+
+The next step was aquaring the data. In this regard, after a long time of testing and consideration, it was
+determined that using a prebuilt dataset would be the best and most time efficient. A perfect dataset was
+found with BoT IoT \cite{BoTIoT}. This dataset includes both simulated and real world IoT devices as well
+as showing many attacks on these devices. Using such a dataset would allow for getting great amounts of
+patterns for which queries could be written to detect. In addition, being timeseries based, it was perfect
+for this paper.
+
+With both the tech stack and dataset decided, the next step was to decide what types of queries should be
+written to get the most out of the potentials of both the dataset and graph databases as a whole. Some basic
+queries were written with some queries left to future work due to lack of knowledge and time on the part of 
+the author. The basic queries included queries such as flows to and from an IP address to determine whether
+a device was a sink, source, or equal with regards to flow direction, how many flows were sent/received per
+second, how many ports were contacted, and the number of incoming flows to a particular address. These queries
+were chosen in particular to look at two certain attacks: DDoS and Network Scan attacks. If an address were a 
+sink, it could be a target, if it was a source it could be an attacker for DDoS. However to truly determine this
+flows per second and incoming flows would also need to be detected. For Network Scans, if the number of ports
+an IP address sends a flow to is abnormally high, it is a likely indicator that a network scan is being performed.
+
+The last step was writting the program and aquiring the results. This produced some very interesting conclusions
+and was satisfying to the author. This also happened to be the longest part of the methodology as parsing all the
+data took a relatively long time, over a day and a half to parse 1,000,000 flows into the database. Once parsed,
+however, the queries were very quick with the longest taking only a matter of seconds to execute.
 
 \section{Results}
+
+With the experiments done and the data aquired there were some interesing results that were discovered. One such
+discovery was that, within the dataset being used, there were clear sinks and sources for flows as shown in figures
+\ref{fig:flowfrom} and \ref{fig:flowto}.
 
 \begin{figure}[h]
     \includegraphics[width=8cm]{Figure1.png}
@@ -83,6 +121,10 @@ and Python for the tech stack.
     \label{fig:flowto}
 \end{figure}
 
+A clear pattern of sending and receiving was being established in the data which is a potential indicator of some
+sort of attack whether DDoS, Network Scanning or otherwise. To determine this further, the average number of flows
+per second was determined as shown in figures \ref{fig:sentfrompersec} and \ref{fig:senttopersec}.
+
 \begin{figure}[h]
     \includegraphics[width=8cm]{Figure3.png}
     \centering
@@ -97,12 +139,20 @@ and Python for the tech stack.
     \label{fig:senttopersec}
 \end{figure}
 
+As with figures \ref{fig:flowfrom} and \ref{fig:flowto}, these figures also showed clear trends with definitive
+sinks and sources, however this was not enough to fully determine what was going on with this data. To make a more
+definitive conclusion the number of ports each IP address contacted was found as shown in figure \ref{fig:portscontacted}.
+
 \begin{figure}[h]
     \includegraphics[width=8cm]{Figure5.png}
     \centering
     \caption{The number of ports contacted per IP address}
     \label{fig:portscontacted}
 \end{figure}
+
+This figure provided a more definitive idea about what was going on for some of the IP Addresses. In particular,
+192.168.100.148 contacted the most ports likely indicating that it was performing a network scan on one of the
+other networks. Similarily could be said for 192.168.100.149 and 192.168.100.150 with less confidence.
 
 \begin{figure}[h]
     \includegraphics[width=8cm]{Figure6.png}
@@ -111,7 +161,7 @@ and Python for the tech stack.
     \label{fig:incomingflows}
 \end{figure}
 
-\section{Analysis}
+\section{Discussion}
 
 \section{Future Work}
 
