@@ -107,14 +107,14 @@ With the experiments done and the data aquired there were some interesing result
 discovery was that, within the dataset being used, there were clear sinks and sources for flows as shown in figures
 \ref{fig:flowfrom} and \ref{fig:flowto}.
 
-\begin{figure}[h]
+\begin{figure}[htbp]
     \includegraphics[width=8cm]{Figure1.png}
     \centering
     \caption{The number of flows that were sent from particular IP addresses}
     \label{fig:flowfrom}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[htbp]
     \includegraphics[width=8cm]{Figure2.png}
     \centering
     \caption{The number of flows that were sent to particular IP addresses}
@@ -125,14 +125,17 @@ A clear pattern of sending and receiving was being established in the data which
 sort of attack whether DDoS, Network Scanning or otherwise. To determine this further, the average number of flows
 per second was determined as shown in figures \ref{fig:sentfrompersec} and \ref{fig:senttopersec}.
 
-\begin{figure}[h]
+While it is good to see how much data was being sent overall, it doesn't really tell very much about what's happening.
+In order to determine something like a DDoS attack, the average packets sent pers second was determined to be more useful.
+
+\begin{figure}[htbp]
     \includegraphics[width=8cm]{Figure3.png}
     \centering
     \caption{The number of flows that were sent from particular IP addresses per second}
     \label{fig:sentfrompersec}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[htbp]
     \includegraphics[width=8cm]{Figure4.png}
     \centering
     \caption{The number of flows that were sent to particular IP addresses per second}
@@ -143,7 +146,7 @@ As with figures \ref{fig:flowfrom} and \ref{fig:flowto}, these figures also show
 sinks and sources, however this was not enough to fully determine what was going on with this data. To make a more
 definitive conclusion the number of ports each IP address contacted was found as shown in figure \ref{fig:portscontacted}.
 
-\begin{figure}[h]
+\begin{figure}[htbp]
     \includegraphics[width=8cm]{Figure5.png}
     \centering
     \caption{The number of ports contacted per IP address}
@@ -158,7 +161,7 @@ With the question of network scans out of the way, the last question remained.
 Was it possible that any of the sinks were being DDoSed?
 For a DDoS to occur there should be an odd number of incoming, unique, flows to a particular IP address. 
 
-\begin{figure}[h]
+\begin{figure}[htbp]
     \includegraphics[width=8cm]{Figure6.png}
     \centering
     \caption{The number of flows from unique IP addresses coming into a particular IP address}
