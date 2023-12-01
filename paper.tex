@@ -154,6 +154,10 @@ This figure provided a more definitive idea about what was going on for some of 
 192.168.100.148 contacted the most ports likely indicating that it was performing a network scan on one of the
 other networks. Similarily could be said for 192.168.100.149 and 192.168.100.150 with less confidence.
 
+With the question of network scans out of the way, the last question remained.
+Was it possible that any of the sinks were being DDoSed?
+For a DDoS to occur there should be an odd number of incoming, unique, flows to a particular IP address. 
+
 \begin{figure}[h]
     \includegraphics[width=8cm]{Figure6.png}
     \centering
@@ -161,11 +165,32 @@ other networks. Similarily could be said for 192.168.100.149 and 192.168.100.150
     \label{fig:incomingflows}
 \end{figure}
 
+As shown in figure \ref{fig:incomingflows} there is no evidence that any DDoS attacks occured withing this timeframe,
+ruling out a DDoS attack as a source of the flows to the IoT device. 
+
 \section{Discussion}
+
+Clearly the work done here is just the beginning, however the results already gained show great promise of revealing
+important information. From so little data and simple queries we can already determine whether two important attacks
+occur. However the results found by these queries on this dataset are limited. For one, only simple queries were
+and more advanced queries could and should be used in the future in order to solve more complicated problems and
+answer more complicated questions. Secondly, the fraction of the dataset used only involved 1,000,000 flows. In
+order to get a more accurate picture of a network, millions more flows so be gathered and analyzed. Luckily,
+due to the speed of graph databases, this shouldn't be a problem for similar experiments in the future. 
 
 \section{Future Work}
 
+The work in this paper should be considered a beginning rather than an end. There are so many doors and paths
+the author was not able to take during this project due to various limitations and constraints. Work for both
+the author and readers for the future include, but are not limited to, expanding the queries performed to answer
+more complicated questions. In addition, additional work should be done to analyze these basic questions at scale,
+whether that be scale of time or scale of data. More work also needs to be performed on the comparison of the
+utility of graph databases for these tasks in comparison to more traditional methods as well as the benefits
+and/or downfalls to increasing efficiency of the existing systems for these tasks.
+
 \section{Conclusion}
+Graph databases proved to be a useful tool for IoT device timeseries data. It is both fast to query and the
+information gained provide meaningful answers to interesting questions.
 
 \printbibliography
 
