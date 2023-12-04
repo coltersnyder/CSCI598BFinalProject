@@ -57,6 +57,11 @@ other solutions \cite{GraphSurvey}. In particular, the use for home users and sm
 examined by asking what queries could be run on a smaller dataset as well as what would be reasonable
 for a home user as far as time and efficiency.
 
+The hope of this paper is to find if graph databases are truly a good solution for these users and see
+if they are able to answer questions that these users would want to ask about their networks. For instance,
+we explore finding whether or not certain attacks had taken place on these systems, a question that would
+likely interest anyone running a network of IoT devices.
+
 
 \section{Related Works}
 There are many current systems that implement different components of the general idea of graphical databases for
@@ -105,7 +110,8 @@ however, the queries were very quick with the longest taking only a matter of se
 
 With the experiments done and the data aquired there were some interesing results that were discovered. One such
 discovery was that, within the dataset being used, there were clear sinks and sources for flows as shown in figures
-\ref{fig:flowfrom} and \ref{fig:flowto}.
+\ref{fig:flowfrom} and \ref{fig:flowto}. These were found by writing a query to determine how many relations were 
+being sent both from a node (figure \ref{fig:flowfrom}) and to a node (figure \ref{fig:flowto}).
 
 \begin{figure}[htbp]
     \includegraphics[width=8cm]{Figure1.png}
@@ -123,7 +129,9 @@ discovery was that, within the dataset being used, there were clear sinks and so
 
 A clear pattern of sending and receiving was being established in the data which is a potential indicator of some
 sort of attack whether DDoS, Network Scanning or otherwise. To determine this further, the average number of flows
-per second was determined as shown in figures \ref{fig:sentfrompersec} and \ref{fig:senttopersec}.
+per second was determined as shown in figures \ref{fig:sentfrompersec} and \ref{fig:senttopersec}. This was gained in
+a similar fashion to figure \ref{fig:flowfrom} and \ref{fig:flowto} with dividing them further based on their Unix
+time stamp and making an average.
 
 While it is good to see how much data was being sent overall, it doesn't really tell very much about what's happening.
 In order to determine something like a DDoS attack, the average packets sent pers second was determined to be more useful.
@@ -144,7 +152,8 @@ In order to determine something like a DDoS attack, the average packets sent per
 
 As with figures \ref{fig:flowfrom} and \ref{fig:flowto}, these figures also showed clear trends with definitive
 sinks and sources, however this was not enough to fully determine what was going on with this data. To make a more
-definitive conclusion the number of ports each IP address contacted was found as shown in figure \ref{fig:portscontacted}.
+definitive conclusion the number of ports each IP address contacted was found as shown in figure 
+\ref{fig:portscontacted}. This query was performed by counting the unique ports contacted by each IP address.
 
 \begin{figure}[htbp]
     \includegraphics[width=8cm]{Figure5.png}
@@ -155,7 +164,8 @@ definitive conclusion the number of ports each IP address contacted was found as
 
 This figure provided a more definitive idea about what was going on for some of the IP Addresses. In particular,
 192.168.100.148 contacted the most ports likely indicating that it was performing a network scan on one of the
-other networks. Similarily could be said for 192.168.100.149 and 192.168.100.150 with less confidence.
+other networks. Similarily could be said for 192.168.100.149 and 192.168.100.150 with less confidence. This query
+was performed by looking at the unique nodes that connected to the IP addresses.
 
 With the question of network scans out of the way, the last question remained.
 Was it possible that any of the sinks were being DDoSed?
@@ -175,7 +185,9 @@ ruling out a DDoS attack as a source of the flows to the IoT device.
 
 Clearly the work done here is just the beginning, however the results already gained show great promise of revealing
 important information. From so little data and simple queries we can already determine whether two important attacks
-occur. However the results found by these queries on this dataset are limited. For one, only simple queries were
+occur. From data such as flows per second and unique devices connecting it is possible to figure out if a DDoS attack
+is occuring. From data such as ports contacted it is possible to see if the network is being scanned.
+However the results found by these queries on this dataset are limited. For one, only simple queries were
 and more advanced queries could and should be used in the future in order to solve more complicated problems and
 answer more complicated questions. Secondly, the fraction of the dataset used only involved 1,000,000 flows. In
 order to get a more accurate picture of a network, millions more flows so be gathered and analyzed. Luckily,
@@ -192,8 +204,10 @@ utility of graph databases for these tasks in comparison to more traditional met
 and/or downfalls to increasing efficiency of the existing systems for these tasks.
 
 \section{Conclusion}
-Graph databases proved to be a useful tool for IoT device timeseries data. It is both fast to query and the
-information gained provide meaningful answers to interesting questions.
+While there are many avenues this work could take in the future, the goal that this paper set out with was
+achieved. It was shown that graph databases could effectively use IoT timeseries data to answer questions
+that would be of interest to both home and small network users. It has been shown that graph databases work
+on timeseries databases with relatively simple queries to produce results for real world applications
 
 \printbibliography
 
