@@ -162,10 +162,14 @@ definitive conclusion the number of ports each IP address contacted was found as
     \label{fig:portscontacted}
 \end{figure}
 
-This figure provided a more definitive idea about what was going on for some of the IP Addresses. In particular,
-192.168.100.148 contacted the most ports likely indicating that it was performing a network scan on one of the
-other networks. Similarily could be said for 192.168.100.149 and 192.168.100.150 with less confidence. This query
-was performed by looking at the unique nodes that connected to the IP addresses.
+This figure provided a more definitive idea about what was going on for some of the IP Addresses. This query
+was performed by looking at the unique nodes that connected to the IP addresses. In order
+to determine whether a network scan had occured, one must look at the number of ports contacted on a particular
+device within quick succession in a particular timeframe. If it is an abnormally high number, it is likely a 
+network scan attack has occurred. In particular, 192.168.100.148 contacted the most ports at 280 ports total 
+being contacted likely indicating that it was performing a network scan on one of the other networks. 
+Similarily could be said for 192.168.100.149 and 192.168.100.150 with less confidence at 82 and 127 ports
+contacted respectively.
 
 With the question of network scans out of the way, the last question remained.
 Was it possible that any of the sinks were being DDoSed?
@@ -178,8 +182,12 @@ For a DDoS to occur there should be an odd number of incoming, unique, flows to 
     \label{fig:incomingflows}
 \end{figure}
 
-As shown in figure \ref{fig:incomingflows} there is no evidence that any DDoS attacks occured withing this timeframe,
-ruling out a DDoS attack as a source of the flows to the IoT device. 
+As shown in figure \ref{fig:incomingflows} there are very few flows to any device. All devices in this sample have 
+only one or two connections. In order to determine if a DDoS attack had occured within a timeframe, what would have
+to be looked for is an abnormally large number of flows coming into a device in order for it to be considered
+distributed. Without it, there is no proper way of determaning Denial of Service from flow data alone. 
+Thus, there is no evidence that any DDoS attacks occured withing this timeframe, ruling out a DDoS attack as a source 
+of the flows to the IoT device. 
 
 \section{Discussion}
 
